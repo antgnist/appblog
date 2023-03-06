@@ -1,5 +1,5 @@
 import './index.scss';
-import Counter from 'entities/counter/ui/counter';
+import Routing from 'pages';
 import withProviders from './providers';
 
 function App(): JSX.Element {
@@ -7,12 +7,7 @@ function App(): JSX.Element {
 
   return (
     <div className={clazz}>
-      <header className="">
-        <div>
-          <p>I&apos;m working</p>
-          <Counter />
-        </div>
-      </header>
+      <Routing />
     </div>
   );
 }

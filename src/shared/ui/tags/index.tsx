@@ -6,7 +6,7 @@ export interface TagsProps {
 
 export default function Tags({ tagsArr = [] }: TagsProps) {
   const listTags = tagsArr.map((tag) => {
-    if (tag) {
+    if (tag && tag.trim()) {
       return (
         <Tag
           key={tag}

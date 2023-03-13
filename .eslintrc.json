@@ -36,6 +36,17 @@
     "react/react-in-jsx-scope": ["off"],
     "react/jsx-uses-react": ["off"],
     "react/jsx-props-no-spreading": ["warn"],
+    "react/require-default-props": [
+      "warn",
+      { "functions": "defaultArguments" }
+    ],
+    "no-param-reassign": [
+      "error",
+      {
+        "props": true,
+        "ignorePropertyModificationsFor": ["state"]
+      }
+    ],
     "arrow-body-style": ["error", "as-needed"],
     "react-hooks/exhaustive-deps": "error",
     "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],

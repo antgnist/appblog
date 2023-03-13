@@ -1,0 +1,39 @@
+.singleArticle {
+  display: flex;
+  padding: 15px 14px 15px 19px;
+  min-height: 140px;
+  flex-direction: column;
+  gap: 25px;
+
+  &__baseInfo {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  &__aside {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 682px;
+    gap: 3px;
+  }
+
+  &__header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+  }
+}

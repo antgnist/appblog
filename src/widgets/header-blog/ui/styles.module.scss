@@ -1,0 +1,14 @@
+.header {
+  height: var(--header-heght);
+  padding: 5px 22px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--color-heading);
+  background-color: var(--color-bg-base);
+
+  &__control {
+    display: flex;
+    gap: 25px;
+  }
+}

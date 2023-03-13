@@ -1,6 +1,6 @@
 import { bindActionCreators } from '@reduxjs/toolkit';
 import { useMemo } from 'react';
-import { useAppDispatch, useAppSelector } from 'shared/hooks/hooks';
+import { useAppDispatch, useAppSelector } from 'shared/hooks';
 import * as actions from '../model/counter.slice';
 
 function Counter() {

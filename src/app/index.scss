@@ -1,19 +1,8 @@
-*,
-*:before,
-*:after {
-  box-sizing: border-box;
-}
+@import './styles/index.scss';
 
-html,
-body {
-  margin: 0;
-  padding: 0;
-}
-
-.App--red {
-  background-color: red;
-}
-
-.App--green {
-  background-color: green;
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-bg);
 }

@@ -1,5 +1,6 @@
 import { Col, Row, Skeleton } from 'antd';
 import Card from 'antd/es/card/Card';
+import { Link } from 'react-router-dom';
 import {
   AvatarUI,
   DateUI,
@@ -12,7 +13,7 @@ import {
 import styles from './index.module.scss';
 
 export interface ArticleRowProps {
-  status?: string;
+  loading?: boolean;
   loggedIn?: boolean;
   tittle?: string;
   description?: string;
@@ -20,10 +21,12 @@ export interface ArticleRowProps {
   fullName?: string;
   date?: string;
   avatarSrc?: string;
+  likesCount?: number | string;
+  slug?: string;
 }
 
 export function ArticleRow({
-  status = 'idle',
+  loading = true,
   loggedIn = false,
   tittle = 'Some article title',
   description = 'Тестовая строка описания',
@@ -31,12 +34,12 @@ export function ArticleRow({
   fullName = 'John Doe',
   date = '2023-03-09T12:39:02.714Z',
   avatarSrc = '',
+  likesCount = 0,
+  slug = '',
 }: ArticleRowProps) {
-  const loadKey = status === 'pending';
-
   return (
     <Row justify="center">
-      <Col style={{ flexBasis: 941 }}>
+      <Col style={{ flexBasis: 941, wordBreak: 'break-word' }}>
         <Card
           style={{
             height: 140,
@@ -45,7 +48,7 @@ export function ArticleRow({
           }}
         >
           <Skeleton
-            loading={loadKey}
+            loading={loading}
             paragraph={{
               rows: 1,
             }}
@@ -60,10 +63,22 @@ export function ArticleRow({
             <div className={styles.articleRow}>
               <div className={styles.articleRow__body}>
                 <div className={styles.articleRow__header}>
-                  <TittleUI tittle={tittle} />
-                  <LikesUI disabled={!loggedIn} style={{ marginTop: '3px' }} />
+                  <Link to={`/articles/${slug}`}>
+                    <TittleUI tittle={tittle} />
+                  </Link>
+                  <LikesUI
+                    disabled={!loggedIn}
+                    count={likesCount}
+                    style={{ marginTop: '3px' }}
+                  />
                 </div>
-                <TagsUI tagsArr={tagsArr} />
+                <TagsUI
+                  tagsArr={tagsArr}
+                  addStyle={{
+                    maxHeight: 'calc(1 * var(--line-height-sm))',
+                    overflow: 'hidden',
+                  }}
+                />
                 <DescriptionUI
                   style={{
                     maxHeight: 'calc(2 * var(--line-height-sm))',

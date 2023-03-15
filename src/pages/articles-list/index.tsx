@@ -1,82 +1,40 @@
-import { unwrapResult } from '@reduxjs/toolkit';
 import { Row, Col, Space } from 'antd';
-import { ArticleRow, articleModel } from 'entities/article';
+import { ArticleRow } from 'entities/article';
+
+import { setArticlesList } from 'entities/article/model';
+import { useGetArticlesQuery } from 'entities/article/model/articlesApi';
 import queryString from 'query-string';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from 'shared/hooks';
-import { SpinFlexUI, PaginationUI } from 'shared/ui';
+import { SpinFlexUI, PaginationUI, GoBackUI } from 'shared/ui';
 
 // import styles from './styles.module.scss';
 
-// const QUERY_KEYS = ['page'];
+const pageInQuery = (pageStr: string | null | (string | null)[]) => {
+  if (pageStr === null || !Number.isFinite(+pageStr)) return 1;
+  return +pageStr;
+};
 
 export default function ArticlesList() {
-  const dispatch = useAppDispatch();
-
-  const { fetchArticles } = articleModel;
-  const articles = useAppSelector((state) => state.articles.entities);
-  const status = useAppSelector((state) => state.articles.status);
-  const currentPage = useAppSelector((state) => state.articles.articlesPage);
-  const totalArticles = useAppSelector((state) => state.articles.articlesCount);
-  const location = useLocation();
   const navigate = useNavigate();
-  const query = useMemo(
-    () => queryString.parse(location.search),
-    [location.search],
-  );
+  const location = useLocation();
+  const query = queryString.parse(location.search);
+  const [page, setPage] = useState(pageInQuery(query.page));
 
-  const pageInQuery = (pageStr: string | null | (string | null)[]) => {
-    if (pageStr === null || !Number.isFinite(+pageStr)) return 1;
-    return +pageStr;
-  };
-
-  const setPageNavigate = useCallback(
-    (page: number) => {
-      if (page === 1) {
-        navigate('./', { relative: 'path' });
-      } else {
-        navigate(`./?page=${page}`, { relative: 'path' });
-      }
-    },
-    [navigate],
-  );
+  const dispatch = useAppDispatch();
+  const { data, isFetching, error, refetch } = useGetArticlesQuery(page);
+  const articles = useAppSelector((state) => state.articles.entities);
+  // const currentPage = useAppSelector((state) => state.articles.articlesPage);
+  const totalArticles = useAppSelector((state) => state.articles.articlesCount);
 
   useEffect(() => {
-    console.log(
-      'Запрос на получение статей. ',
-      'Зависимости верхнего: query:',
-      query,
-    );
-    const pageQuery = pageInQuery(query.page);
-    const fetchData = async () => {
-      try {
-        const resultAction = await dispatch(fetchArticles(pageQuery));
-        const result = unwrapResult(resultAction);
-        console.log('РЕЗУЛЬТАТ: ', result);
-      } catch (err) {
-        console.error('Failed to fetch articles:', err);
-      }
-    };
-    fetchData();
-  }, [dispatch, fetchArticles, query]);
-
-  useEffect(() => {
-    console.log(
-      'Зависимости нижнего: query:',
-      query,
-      ' totalArticles:',
-      totalArticles,
-    );
-    let pageQuery = pageInQuery(query.page);
-    if (pageQuery > Math.ceil(totalArticles / 5) && totalArticles > 0) {
-      pageQuery = 1;
+    if (data) {
+      dispatch(setArticlesList(data));
     }
-    dispatch(articleModel.changeArticlesPage(pageQuery));
-    setPageNavigate(pageQuery);
-  }, [totalArticles, query, dispatch, setPageNavigate]);
+  }, [data, dispatch]);
 
-  if (status === 'pending')
+  if (isFetching)
     return (
       <div
         style={{
@@ -88,6 +46,51 @@ export default function ArticlesList() {
         <SpinFlexUI />
       </div>
     );
+
+  if (error) {
+    return (
+      <GoBackUI
+        text="При запросе произошла Ошибка"
+        onClicked={() => {
+          setPage(1);
+          refetch();
+        }}
+      />
+    );
+  }
+
+  if (!articles.length) {
+    return (
+      <GoBackUI
+        text="Список статей по данному запросу пуст"
+        linkText="Посмотреть другие статьи"
+        linkTo="./"
+        onClicked={() => {
+          setPage(1);
+        }}
+      />
+    );
+  }
+
+  const pagination = (
+    <Row justify="center">
+      <Col>
+        <PaginationUI
+          current={page}
+          total={totalArticles}
+          chgArticlesPage={(num) => {
+            if (num === 1) {
+              navigate('./', { relative: 'path' });
+            } else {
+              navigate(`./?page=${num}`, { relative: 'path' });
+            }
+            window.scrollTo(0, 0);
+            setPage(num);
+          }}
+        />
+      </Col>
+    </Row>
+  );
 
   return (
     <Space
@@ -102,7 +105,7 @@ export default function ArticlesList() {
       {articles.map((article) => (
         <ArticleRow
           key={article.slug}
-          status={status}
+          loading={isFetching}
           loggedIn={false}
           tittle={article.title}
           description={article.description}
@@ -110,20 +113,12 @@ export default function ArticlesList() {
           fullName={article.author.username}
           date={article.createdAt}
           avatarSrc={article.author.image}
+          likesCount={article.favoritesCount}
+          slug={article.slug}
         />
       ))}
-      <Row justify="center">
-        <Col>
-          <PaginationUI
-            current={currentPage}
-            total={totalArticles}
-            chgArticlesPage={(num) => {
-              dispatch(articleModel.changeArticlesPage(num));
-              setPageNavigate(num);
-            }}
-          />
-        </Col>
-      </Row>
+
+      {pagination}
     </Space>
   );
 }

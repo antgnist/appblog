@@ -5,12 +5,14 @@ import styles from './index.module.scss';
 export interface PaginationUIProprs {
   current: number;
   total: number;
+  pageSize?: number;
   chgArticlesPage: (a: number) => void;
 }
 
 function PaginationUI({
   current,
   total = 5,
+  pageSize = 20,
   chgArticlesPage,
 }: PaginationUIProprs) {
   const onChangeHandler = (page: number) => {
@@ -23,7 +25,8 @@ function PaginationUI({
         current={current}
         total={total}
         size="small"
-        defaultPageSize={5}
+        defaultPageSize={20}
+        pageSize={pageSize}
         className={styles.paginationUI}
         onChange={(page) => {
           onChangeHandler(page);

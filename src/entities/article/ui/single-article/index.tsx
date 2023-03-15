@@ -14,6 +14,15 @@ import styles from './index.module.scss';
 
 export interface SingleArticleProps {
   loading?: boolean;
+  loggedIn?: boolean;
+  tittle: string;
+  description?: string;
+  body?: string;
+  likesCount?: number;
+  tagsArr?: string[];
+  fullName?: string;
+  date?: string;
+  avatarSrc?: string;
 }
 
 const primer = `Выделение текста
@@ -33,10 +42,21 @@ https://hexlet.io — текст простой ссылки станет кли
   * Еще один подпункт
 `;
 
-export function SingleArticle({ loading = false }: SingleArticleProps) {
+export function SingleArticle({
+  loading = true,
+  loggedIn = false,
+  tittle = '',
+  description = '',
+  body = primer,
+  likesCount = 0,
+  tagsArr = [],
+  fullName = '',
+  date = '',
+  avatarSrc = '',
+}: SingleArticleProps) {
   return (
     <Row justify="center">
-      <Col style={{ flexBasis: 941 }}>
+      <Col style={{ flexBasis: 941, wordBreak: 'break-word' }}>
         <Card
           style={{
             minHeight: 'calc(100vh - 88px - var(--header-heght))',
@@ -61,26 +81,30 @@ export function SingleArticle({ loading = false }: SingleArticleProps) {
               <div className={styles.singleArticle__baseInfo}>
                 <div className={styles.singleArticle__body}>
                   <div className={styles.singleArticle__header}>
-                    <TittleUI tittle="Some article title" />
-                    <LikesUI style={{ marginTop: '3px' }} />
+                    <TittleUI tittle={tittle} />
+                    <LikesUI
+                      disabled={!loggedIn}
+                      count={likesCount}
+                      style={{ marginTop: '3px' }}
+                    />
                   </div>
-                  <TagsUI tagsArr={['Tag1', 'Tag2']} />
+                  <TagsUI tagsArr={tagsArr} />
                   <DescriptionUI
                     style={{ maxHeight: '4em' }}
-                    description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris  nisi ut aliquip ex ea commodo consequat. "
+                    description={description}
                   />
                 </div>
                 <div className={styles.singleArticle__aside}>
                   <div className={styles.singleArticle__info}>
-                    <FullNameUI fullName="John Doe" />
-                    <DateUI strDate="2023-03-09T12:39:02.714Z" />
+                    <FullNameUI fullName={fullName} />
+                    <DateUI strDate={date} />
                   </div>
-                  <AvatarUI src="" />
+                  <AvatarUI src={avatarSrc} />
                 </div>
               </div>
 
               <div className={styles.singleArticle__content}>
-                <MarkdownArticleUI article={primer} />
+                <MarkdownArticleUI article={body} />
               </div>
             </div>
           </Skeleton>

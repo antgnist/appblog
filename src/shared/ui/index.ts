@@ -10,3 +10,6 @@ export { default as LikesUI } from './likes';
 export { default as PaginationUI } from './pagination';
 export { default as MarkdownArticleUI } from './markdown-article';
 export { default as SpinFlexUI } from './spin-flex';
+export { default as GoBackUI } from './go-back';
+export { default as SignWindowUI } from './sign-window';
+export { default as FormTitleUI } from './form-title';

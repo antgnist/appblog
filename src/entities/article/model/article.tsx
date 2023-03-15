@@ -1,107 +1,44 @@
 import {
-  createAsyncThunk,
   createSlice,
-  SerializedError,
+  // SerializedError,
 } from '@reduxjs/toolkit';
-import { RootState } from 'app/store/configureStore';
-import { apiService } from 'shared/services/api-service';
 
-interface Article {
-  slug: string;
-  title: string;
-  description: string;
-  body: string;
-  tagList: string[];
-  createdAt: string;
-  updatedAt: string;
-  favorited: boolean;
-  favoritesCount: number;
-  author: {
-    username: string;
-    bio: string;
-    image: string;
-    following: boolean;
-  };
-}
+import { IArticle } from 'shared/interfaces';
 
 interface ArticlesState {
-  entities: Article[];
+  entities: IArticle[];
+  currentArticle: IArticle | null;
   articlesCount: number;
-  articlesPage: number;
-  status: 'idle' | 'pending' | 'fulfilled';
-  currentRequestId: string | undefined;
-  error: Error | null | string | SerializedError;
+  // articlesPage: number;
+  // error: Error | null | string | SerializedError;
 }
-
-const fetchArticles = createAsyncThunk<
-  { articles: Article[]; articlesCount: number },
-  number,
-  { state: RootState }
->(
-  'articles/fetchArticlesStatus',
-  async (pageNumber, { getState, requestId }) => {
-    const { currentRequestId, status } = getState().articles;
-    if (status !== 'pending' || requestId !== currentRequestId) {
-      throw new Error('Request canceled!');
-    }
-    const response = await apiService.getArticles(pageNumber);
-    return response;
-  },
-);
 
 const initialState: ArticlesState = {
   entities: [],
+  currentArticle: null,
   articlesCount: 0,
-  articlesPage: 1,
-  status: 'idle',
-  currentRequestId: undefined,
-  error: null,
+  // articlesPage: 1,
+  // error: null,
 };
 
 const articlesSlice = createSlice({
   name: 'articles',
   initialState,
   reducers: {
-    changeArticlesPage(state, action) {
-      state.articlesPage = action.payload;
+    // changeArticlesPage(state, action) {
+    //   state.articlesPage = action.payload;
+    // },
+    setArticle(state, action) {
+      state.currentArticle = action.payload;
+    },
+    setArticlesList(state, action) {
+      state.entities = action.payload.articles;
+      state.articlesCount = action.payload.articlesCount;
     },
   },
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchArticles.pending, (state, action) => {
-        if (state.status === 'idle') {
-          state.status = 'pending';
-          state.currentRequestId = action.meta.requestId;
-        }
-      })
-      .addCase(fetchArticles.fulfilled, (state, action) => {
-        const { requestId } = action.meta;
-        if (
-          state.status === 'pending' &&
-          state.currentRequestId === requestId
-        ) {
-          // state.loading = 'fulfilled';
-          state.status = 'idle';
-          state.entities = action.payload.articles;
-          state.articlesCount = action.payload.articlesCount;
-          state.currentRequestId = undefined;
-        }
-      })
-      .addCase(fetchArticles.rejected, (state, action) => {
-        const { requestId } = action.meta;
-        if (
-          state.status === 'pending' &&
-          state.currentRequestId === requestId
-        ) {
-          state.status = 'idle';
-          state.error = action.error;
-          state.currentRequestId = undefined;
-        }
-      });
-  },
+  extraReducers: {},
 });
 
 const { actions, reducer } = articlesSlice;
-export const { changeArticlesPage } = actions;
+export const { setArticle, setArticlesList } = actions;
 export { reducer as articlesReducer };
-export { fetchArticles };

@@ -2,9 +2,10 @@ import { Tag } from 'antd';
 
 export interface TagsProps {
   tagsArr?: string[];
+  addStyle?: object;
 }
 
-export default function Tags({ tagsArr = [] }: TagsProps) {
+export default function Tags({ tagsArr = [], addStyle = {} }: TagsProps) {
   const listTags = tagsArr.map((tag) => {
     if (tag && tag.trim()) {
       return (
@@ -26,5 +27,5 @@ export default function Tags({ tagsArr = [] }: TagsProps) {
     return null;
   });
 
-  return <div>{listTags}</div>;
+  return <div style={addStyle}>{listTags}</div>;
 }

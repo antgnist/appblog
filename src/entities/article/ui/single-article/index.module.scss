@@ -7,15 +7,25 @@
 
   &__baseInfo {
     display: flex;
+    flex-direction: column-reverse;
+    gap: 10px;
     justify-content: space-between;
     align-items: flex-start;
+    @media (min-width: 540px) {
+      flex-direction: row;
+      gap: 0px;
+    }
   }
 
   &__aside {
     display: flex;
     flex-direction: column;
+    align-self: flex-end;
     gap: 30px;
     flex-shrink: 0;
+    @media (min-width: 540px) {
+      align-self: initial;
+    }
   }
 
   &__user {
@@ -51,8 +61,10 @@
   &__body {
     display: flex;
     flex-direction: column;
-    flex-basis: 682px;
     gap: 3px;
+    @media (min-width: 540px) {
+      flex-basis: 682px;
+    }
   }
 
   &__header {

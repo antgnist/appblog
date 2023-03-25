@@ -2,11 +2,15 @@
   min-height: var(--header-heght);
   padding: 5px 22px;
   display: flex;
+  flex-direction: column;
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   color: var(--color-heading);
   background-color: var(--color-bg-base);
+  @media (min-width: 540px) {
+    flex-direction: row;
+  }
 
   &__logo {
     color: var(--color-heading);
@@ -15,13 +19,19 @@
 
   &__control__noauth {
     display: flex;
-    gap: 25px;
+    gap: 10px;
     align-items: center;
+    @media (min-width: 540px) {
+      gap: 25px;
+    }
   }
   &__control__auth {
     display: flex;
-    gap: 25px;
+    gap: 10px;
     align-items: center;
+    @media (min-width: 540px) {
+      gap: 25px;
+    }
   }
 
   &__signUpBtn {

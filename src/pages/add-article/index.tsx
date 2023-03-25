@@ -37,7 +37,6 @@ function AddArticle() {
     });
     const success = response as IResponseSuccessArticle;
     const fail = response as IResponseError;
-    console.log('response: ', response);
 
     if (success.data) {
       navigate(`/articles/${success.data.article.slug}`);
@@ -45,7 +44,6 @@ function AddArticle() {
       const error = fail.error as IErrorServ;
       const arrError = Object.entries(error.data.errors);
       setErrorStatus(arrError);
-      console.log((response as IResponseError).error);
     }
   };
 

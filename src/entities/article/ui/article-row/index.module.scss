@@ -1,15 +1,30 @@
 .articleRow {
   display: flex;
+  flex-direction: column-reverse;
   justify-content: space-between;
   align-items: flex-start;
   padding: 15px 14px 15px 19px;
   min-height: 140px;
+  @media (min-width: 540px) {
+    flex-direction: row;
+  }
+
+  &__card {
+    height: 180px;
+    @media (min-width: 540px) {
+      height: 140px;
+    }
+  }
 
   &__aside {
     display: flex;
     flex-shrink: 0;
+    align-self: flex-end;
     align-items: center;
     gap: 12px;
+    @media (min-width: 540px) {
+      align-self: initial;
+    }
   }
 
   &__info {
@@ -20,8 +35,10 @@
   &__body {
     display: flex;
     flex-direction: column;
-    flex-basis: 682px;
     gap: 3px;
+    @media (min-width: 540px) {
+      flex-basis: 682px;
+    }
   }
 
   &__header {

@@ -39,7 +39,6 @@ function SignIn() {
   const handleEmailChange = (value: string) => value.toLowerCase();
 
   const onSubmit = handleSubmit(async (data: SignInFormData) => {
-    console.log(data);
     const response = await signInMutation({
       user: {
         email: data.email,
@@ -48,7 +47,6 @@ function SignIn() {
     });
     const success = response as IResponseSuccessUser;
     const fail = response as IResponseError;
-    console.log('response: ', response);
 
     if (success.data) {
       dispatch(userModel.login({ ...success.data.user }));
@@ -59,9 +57,6 @@ function SignIn() {
       const error = fail.error as IErrorServ;
       const arrError = Object.entries(error.data.errors);
       setErrorStatus(arrError);
-      console.log('вся ошибка: ', fail);
-      console.log('arrError: ', arrError);
-      console.log((response as IResponseError).error);
     }
   });
 

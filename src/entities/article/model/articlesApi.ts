@@ -39,10 +39,16 @@ export const articlesApi = createApi({
         const offset = page === 1 || page === undefined ? 0 : (page - 1) * 20;
         return `/articles?offset=${offset}&limit=20`;
       },
+      forceRefetch() {
+        return true;
+      },
     }),
     getArticleBySlug: builder.query<IArticleResponse, string>({
       query: (slug) => `/articles/${slug}`,
-      //   transformResponse: (response: IArticleResponse) => response.article,
+      forceRefetch() {
+        return true;
+      },
+      // transformResponse: (response: IArticleResponse) => response.article,
     }),
     addArticle: builder.mutation<IArticleResponse, IArticleRequestAdding>({
       query: (data) => ({

@@ -49,7 +49,6 @@ function SignUp() {
     value === getValues('password') || 'Passwords must match';
 
   const onSubmit = handleSubmit(async (data: SignUpFormData) => {
-    console.log(data);
     const response = await signUpMutation({
       user: {
         username: data.username,

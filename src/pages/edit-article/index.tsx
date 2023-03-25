@@ -55,7 +55,6 @@ function EditArticle() {
     });
     const success = response as IResponseSuccessArticle;
     const fail = response as IResponseError;
-    console.log('response: ', response);
 
     if (success.data) {
       navigate(`/articles/${success.data.article.slug}`);
@@ -64,7 +63,6 @@ function EditArticle() {
       const errorRes = fail.error as IErrorServ;
       const arrError = Object.entries(errorRes.data.errors);
       setErrorStatus(arrError);
-      console.log((response as IResponseError)?.error);
     }
   };
 

@@ -45,7 +45,6 @@ function AppLayout() {
   }, [data, dispatch]);
 
   useEffect(() => {
-    console.log('ОШИБКА внутри useEffect AppLayout: ', error);
     const err = error as FetchBaseQueryError;
     if (err?.status === 401) {
       if (tokenObj) {

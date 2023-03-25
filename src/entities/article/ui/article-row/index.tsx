@@ -43,8 +43,9 @@ export function ArticleRow({
     <Row justify="center">
       <Col style={{ flexBasis: 941, wordBreak: 'break-word' }}>
         <Card
+          className={styles.articleRow__card}
           style={{
-            height: 140,
+            // height: 140,
             filter: 'drop-shadow(0px 4px 7px rgba(0, 0, 0, 0.15))',
             border: 'initial',
           }}
@@ -75,12 +76,6 @@ export function ArticleRow({
                     count={likesCount}
                     style={{ marginTop: '3px' }}
                   />
-                  {/* <LikesUI
-                    disabled={!loggedIn}
-                    liked={liked}
-                    count={likesCount}
-                    style={{ marginTop: '3px' }}
-                  /> */}
                 </div>
                 <TagsUI
                   tagsArr={tagsArr}

@@ -1,10 +1,11 @@
 import { Row, Col, Space } from 'antd';
 import { ArticleRow } from 'entities/article';
 
-import { setArticlesList } from 'entities/article/model';
+import { setArticlesList, changeArticlesPage } from 'entities/article/model';
 import { useGetArticlesQuery } from 'entities/article/model/articlesApi';
+import { userModel } from 'entities/user';
 import queryString from 'query-string';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from 'shared/hooks';
 import { SpinFlexUI, PaginationUI, GoBackUI } from 'shared/ui';
@@ -20,12 +21,20 @@ export default function ArticlesList() {
   const navigate = useNavigate();
   const location = useLocation();
   const query = queryString.parse(location.search);
-  const [page, setPage] = useState(pageInQuery(query.page));
-
   const dispatch = useAppDispatch();
-  const { data, isFetching, error, refetch } = useGetArticlesQuery(page);
+  // const [page, setPage] = useState(pageInQuery(query.page));
+  const currentPage = useAppSelector((state) => state.articles.articlesPage);
+  const user = useAppSelector(userModel.selectUser);
+  const pageNum = pageInQuery(query.page);
+
+  useEffect(() => {
+    if (currentPage !== pageNum) {
+      dispatch(changeArticlesPage(pageNum));
+    }
+  }, [currentPage, pageNum, dispatch]);
+
+  const { data, isFetching, error, refetch } = useGetArticlesQuery(currentPage); // page
   const articles = useAppSelector((state) => state.articles.entities);
-  // const currentPage = useAppSelector((state) => state.articles.articlesPage);
   const totalArticles = useAppSelector((state) => state.articles.articlesCount);
 
   useEffect(() => {
@@ -52,7 +61,8 @@ export default function ArticlesList() {
       <GoBackUI
         text="При запросе произошла Ошибка"
         onClicked={() => {
-          setPage(1);
+          //    setPage(1);
+          dispatch(changeArticlesPage(1));
           refetch();
         }}
       />
@@ -66,7 +76,8 @@ export default function ArticlesList() {
         linkText="Посмотреть другие статьи"
         linkTo="./"
         onClicked={() => {
-          setPage(1);
+          // setPage(1);
+          dispatch(changeArticlesPage(1));
         }}
       />
     );
@@ -76,7 +87,7 @@ export default function ArticlesList() {
     <Row justify="center">
       <Col>
         <PaginationUI
-          current={page}
+          current={currentPage} // page
           total={totalArticles}
           chgArticlesPage={(num) => {
             if (num === 1) {
@@ -85,7 +96,7 @@ export default function ArticlesList() {
               navigate(`./?page=${num}`, { relative: 'path' });
             }
             window.scrollTo(0, 0);
-            setPage(num);
+            dispatch(changeArticlesPage(1)); //  setPage(num);
           }}
         />
       </Col>
@@ -106,7 +117,7 @@ export default function ArticlesList() {
         <ArticleRow
           key={article.slug}
           loading={isFetching}
-          loggedIn={false}
+          loggedIn={user.loggedIn}
           tittle={article.title}
           description={article.description}
           tagsArr={article.tagList}
@@ -114,6 +125,7 @@ export default function ArticlesList() {
           date={article.createdAt}
           avatarSrc={article.author.image}
           likesCount={article.favoritesCount}
+          liked={article.favorited}
           slug={article.slug}
         />
       ))}

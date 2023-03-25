@@ -3,7 +3,7 @@
   padding: 15px 14px 15px 19px;
   min-height: 140px;
   flex-direction: column;
-  gap: 25px;
+  gap: 10px;
 
   &__baseInfo {
     display: flex;
@@ -13,14 +13,39 @@
 
   &__aside {
     display: flex;
+    flex-direction: column;
+    gap: 30px;
     flex-shrink: 0;
+  }
+
+  &__user {
+    display: flex;
+    justify-content: flex-end;
     align-items: center;
     gap: 12px;
+  }
+
+  &__manage {
+    display: flex;
+    gap: 12px;
+  }
+
+  &__deleteButton {
+    width: 78px;
+    color: var(--color-error);
+    border-color: var(--color-error);
+  }
+
+  &__editButton {
+    width: 66px;
+    color: var(--color-success);
+    border-color: var(--color-success);
   }
 
   &__info {
     display: flex;
     flex-direction: column;
+    align-items: flex-end;
   }
 
   &__body {

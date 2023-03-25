@@ -1,4 +1,4 @@
-import { HeartOutlined } from '@ant-design/icons';
+import { HeartOutlined, HeartFilled } from '@ant-design/icons';
 import { Button } from 'antd';
 import styles from './index.module.scss';
 
@@ -6,12 +6,16 @@ export interface LikesUIProps {
   count?: string | number;
   style?: object;
   disabled?: boolean;
+  liked?: boolean;
+  action?: () => void;
 }
 
 export default function LikesUI({
-  count = 12,
+  count = 0,
   style = {},
   disabled = true,
+  liked = false,
+  action = () => {},
 }: LikesUIProps) {
   return (
     <div className={styles.likesUI} style={style}>
@@ -23,8 +27,18 @@ export default function LikesUI({
           lineHeight: '22px',
           width: '20px',
         }}
-        icon={<HeartOutlined />}
+        icon={
+          liked ? (
+            // <HeartOutlined style={{ color: 'red' }} />
+            <HeartFilled style={{ color: 'red' }} />
+          ) : (
+            <HeartOutlined style={{}} />
+          )
+        }
         disabled={disabled}
+        onClick={() => {
+          action();
+        }}
       />
       <div>{count}</div>
     </div>

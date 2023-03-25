@@ -1,9 +1,6 @@
 import './index.scss';
 import { ConfigProvider } from 'antd';
-import Layout, { Content } from 'antd/es/layout/layout';
-// import Counter from 'entities/counter/ui/counter';
 import Routing from 'pages';
-import HeaderBlog from 'widgets/header-blog';
 import withProviders from './providers';
 
 function App(): JSX.Element {
@@ -23,16 +20,7 @@ function App(): JSX.Element {
         },
       }}
     >
-      <Layout className="app">
-        {/* <div>
-          <p>I&apos;m working</p>
-          <Counter />
-        </div> */}
-        <HeaderBlog />
-        <Content>
-          <Routing />
-        </Content>
-      </Layout>
+      <Routing />
     </ConfigProvider>
   );
 }

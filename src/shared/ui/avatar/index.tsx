@@ -8,7 +8,17 @@ export interface AvatarUIPprop {
 
 function AvatarUI({ src, size = 46 }: AvatarUIPprop) {
   const avatarSrc = src || noAva;
-  return <Avatar size={size} src={avatarSrc} />;
+  return (
+    // <div style={{ minWidth: `${size}px` }}>
+    <Avatar
+      alt="A"
+      size={size}
+      src={avatarSrc}
+      icon={<img src={noAva} alt="noAva" />}
+      style={{ minWidth: `${size}px` }}
+    />
+    // </div>
+  );
 }
 
 export default AvatarUI;

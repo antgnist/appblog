@@ -1,14 +1,46 @@
 .header {
-  height: var(--header-heght);
+  min-height: var(--header-heght);
   padding: 5px 22px;
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   color: var(--color-heading);
   background-color: var(--color-bg-base);
 
-  &__control {
+  &__logo {
+    color: var(--color-heading);
+    font-size: var(--font-size-h6);
+  }
+
+  &__control__noauth {
     display: flex;
     gap: 25px;
+    align-items: center;
+  }
+  &__control__auth {
+    display: flex;
+    gap: 25px;
+    align-items: center;
+  }
+
+  &__signUpBtn {
+    width: 109px;
+    height: 46px;
+    align-items: center;
+    font-size: var(--font-size-h6);
+    color: var(--color-success);
+    border-color: var(--color-success);
+  }
+
+  &__signInBtn {
+    height: 46px;
+    align-items: center;
+    font-size: var(--font-size-h6);
+  }
+
+  &__createArticleBtn {
+    color: var(--color-success);
+    border-color: var(--color-success);
   }
 }

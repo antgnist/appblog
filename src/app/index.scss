@@ -1,8 +1,5 @@
 @import './styles/index.scss';
 
-.app {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background-color: var(--color-bg);
+body {
+  overflow-y: scroll;
 }

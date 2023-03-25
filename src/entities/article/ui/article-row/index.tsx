@@ -1,5 +1,6 @@
 import { Col, Row, Skeleton } from 'antd';
 import Card from 'antd/es/card/Card';
+import { Favorites } from 'features/favorites';
 import { Link } from 'react-router-dom';
 import {
   AvatarUI,
@@ -8,7 +9,6 @@ import {
   TittleUI,
   TagsUI,
   DescriptionUI,
-  LikesUI,
 } from 'shared/ui';
 import styles from './index.module.scss';
 
@@ -22,6 +22,7 @@ export interface ArticleRowProps {
   date?: string;
   avatarSrc?: string;
   likesCount?: number | string;
+  liked?: boolean;
   slug?: string;
 }
 
@@ -35,6 +36,7 @@ export function ArticleRow({
   date = '2023-03-09T12:39:02.714Z',
   avatarSrc = '',
   likesCount = 0,
+  liked = false,
   slug = '',
 }: ArticleRowProps) {
   return (
@@ -66,11 +68,19 @@ export function ArticleRow({
                   <Link to={`/articles/${slug}`}>
                     <TittleUI tittle={tittle} />
                   </Link>
-                  <LikesUI
+                  <Favorites
+                    keySlug={slug}
                     disabled={!loggedIn}
+                    liked={liked}
                     count={likesCount}
                     style={{ marginTop: '3px' }}
                   />
+                  {/* <LikesUI
+                    disabled={!loggedIn}
+                    liked={liked}
+                    count={likesCount}
+                    style={{ marginTop: '3px' }}
+                  /> */}
                 </div>
                 <TagsUI
                   tagsArr={tagsArr}

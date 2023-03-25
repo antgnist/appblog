@@ -1,5 +1,8 @@
 import { Col, Row, Skeleton } from 'antd';
 import Card from 'antd/es/card/Card';
+import { DeleteArticleButton } from 'features/delete-button';
+import { Favorites } from 'features/favorites';
+import { useNavigate } from 'react-router-dom';
 import {
   AvatarUI,
   DateUI,
@@ -7,53 +10,44 @@ import {
   TittleUI,
   TagsUI,
   DescriptionUI,
-  LikesUI,
   MarkdownArticleUI,
+  ButtonUI,
 } from 'shared/ui';
 import styles from './index.module.scss';
 
 export interface SingleArticleProps {
   loading?: boolean;
   loggedIn?: boolean;
+  currentAuthor?: boolean;
+  slug: string;
   tittle: string;
   description?: string;
   body?: string;
   likesCount?: number;
+  liked?: boolean;
   tagsArr?: string[];
   fullName?: string;
   date?: string;
   avatarSrc?: string;
 }
 
-const primer = `Выделение текста
-*Этот текст будет наклонным (курсив)*
-_Этот текст будет наклонным (курсив)_
-
-**Этот текст будет жирным**
-__Этот текст будет жирным__
-https://hexlet.io — текст простой ссылки станет кликабельной ссылкой автоматически
-Ссылкой можно сделать любой текст:
-
-[Это ссылка на Хекслет](https://hexlet.io)
-
-* Пункт 
-* Еще один пункт
-  * Подпункт
-  * Еще один подпункт
-`;
-
 export function SingleArticle({
   loading = true,
   loggedIn = false,
+  currentAuthor = false,
+  slug = '',
   tittle = '',
   description = '',
-  body = primer,
+  body = '',
   likesCount = 0,
+  liked = false,
   tagsArr = [],
   fullName = '',
   date = '',
   avatarSrc = '',
 }: SingleArticleProps) {
+  const navigate = useNavigate();
+
   return (
     <Row justify="center">
       <Col style={{ flexBasis: 941, wordBreak: 'break-word' }}>
@@ -81,25 +75,52 @@ export function SingleArticle({
               <div className={styles.singleArticle__baseInfo}>
                 <div className={styles.singleArticle__body}>
                   <div className={styles.singleArticle__header}>
-                    <TittleUI tittle={tittle} />
-                    <LikesUI
+                    <TittleUI
+                      tittle={tittle}
+                      style={{ maxHeight: 'initial' }}
+                    />
+                    <Favorites
+                      keySlug={slug}
+                      disabled={!loggedIn}
+                      liked={liked}
+                      count={likesCount}
+                      style={{ marginTop: '3px', alignSelf: 'flex-start' }}
+                    />
+                    {/* <LikesUI
                       disabled={!loggedIn}
                       count={likesCount}
-                      style={{ marginTop: '3px' }}
-                    />
+                      liked={liked}
+                      style={{ marginTop: '3px', alignSelf: 'flex-start' }}
+                    /> */}
                   </div>
                   <TagsUI tagsArr={tagsArr} />
-                  <DescriptionUI
-                    style={{ maxHeight: '4em' }}
-                    description={description}
-                  />
+                  <DescriptionUI description={description} />
                 </div>
                 <div className={styles.singleArticle__aside}>
-                  <div className={styles.singleArticle__info}>
-                    <FullNameUI fullName={fullName} />
-                    <DateUI strDate={date} />
+                  <div className={styles.singleArticle__user}>
+                    <div className={styles.singleArticle__info}>
+                      <FullNameUI fullName={fullName} />
+                      <DateUI strDate={date} />
+                    </div>
+                    <AvatarUI src={avatarSrc} />
                   </div>
-                  <AvatarUI src={avatarSrc} />
+
+                  {currentAuthor ? (
+                    <div className={styles.singleArticle__manage}>
+                      <DeleteArticleButton
+                        slug={slug}
+                        className={styles.singleArticle__deleteButton}
+                      />
+                      <ButtonUI
+                        className={styles.singleArticle__editButton}
+                        action={() => {
+                          navigate(`/articles/${slug}/edit`);
+                        }}
+                      >
+                        Edit
+                      </ButtonUI>
+                    </div>
+                  ) : null}
                 </div>
               </div>
 

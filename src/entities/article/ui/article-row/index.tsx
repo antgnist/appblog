@@ -21,8 +21,6 @@ export interface ArticleRowProps {
   fullName?: string;
   date?: string;
   avatarSrc?: string;
-  likesCount?: number | string;
-  liked?: boolean;
   slug?: string;
 }
 
@@ -35,8 +33,6 @@ export function ArticleRow({
   fullName = 'John Doe',
   date = '2023-03-09T12:39:02.714Z',
   avatarSrc = '',
-  likesCount = 0,
-  liked = false,
   slug = '',
 }: ArticleRowProps) {
   return (
@@ -72,8 +68,6 @@ export function ArticleRow({
                   <Favorites
                     keySlug={slug}
                     disabled={!loggedIn}
-                    liked={liked}
-                    count={likesCount}
                     style={{ marginTop: '3px' }}
                   />
                 </div>

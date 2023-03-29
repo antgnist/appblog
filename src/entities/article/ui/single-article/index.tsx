@@ -23,12 +23,11 @@ export interface SingleArticleProps {
   tittle: string;
   description?: string;
   body?: string;
-  likesCount?: number;
-  liked?: boolean;
   tagsArr?: string[];
   fullName?: string;
   date?: string;
   avatarSrc?: string;
+  deleteCallback?: () => void;
 }
 
 export function SingleArticle({
@@ -39,12 +38,11 @@ export function SingleArticle({
   tittle = '',
   description = '',
   body = '',
-  likesCount = 0,
-  liked = false,
   tagsArr = [],
   fullName = '',
   date = '',
   avatarSrc = '',
+  deleteCallback,
 }: SingleArticleProps) {
   const navigate = useNavigate();
 
@@ -82,16 +80,8 @@ export function SingleArticle({
                     <Favorites
                       keySlug={slug}
                       disabled={!loggedIn}
-                      liked={liked}
-                      count={likesCount}
                       style={{ marginTop: '3px', alignSelf: 'flex-start' }}
                     />
-                    {/* <LikesUI
-                      disabled={!loggedIn}
-                      count={likesCount}
-                      liked={liked}
-                      style={{ marginTop: '3px', alignSelf: 'flex-start' }}
-                    /> */}
                   </div>
                   <TagsUI tagsArr={tagsArr} />
                   <DescriptionUI description={description} />
@@ -110,6 +100,7 @@ export function SingleArticle({
                       <DeleteArticleButton
                         slug={slug}
                         className={styles.singleArticle__deleteButton}
+                        callback={deleteCallback || undefined}
                       />
                       <ButtonUI
                         className={styles.singleArticle__editButton}

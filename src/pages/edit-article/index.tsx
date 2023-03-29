@@ -36,7 +36,7 @@ function EditArticle() {
 
   const params = useParams();
   const slug = params.slug as string;
-  const { data, isFetching, error, refetch } = useGetArticleBySlugQuery(slug);
+  const { data, isFetching, error } = useGetArticleBySlugQuery(slug);
   const [errorStatus, setErrorStatus] = useState<[string, unknown][]>([]);
   const [updateArticleMutation, { isLoading, isError, isSuccess }] =
     useUpdateArticleMutation();
@@ -58,7 +58,6 @@ function EditArticle() {
 
     if (success.data) {
       navigate(`/articles/${success.data.article.slug}`);
-      refetch();
     } else {
       const errorRes = fail.error as IErrorServ;
       const arrError = Object.entries(errorRes.data.errors);

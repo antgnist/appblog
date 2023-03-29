@@ -32,23 +32,24 @@ export const articlesApi = createApi({
       return headers;
     },
   }),
-
+  tagTypes: ['Articles', 'Article'],
   endpoints: (builder) => ({
     getArticles: builder.query<IArticlesResponse, number | void>({
       query: (page = 1) => {
         const offset = page === 1 || page === undefined ? 0 : (page - 1) * 20;
         return `/articles?offset=${offset}&limit=20`;
       },
-      forceRefetch() {
-        return true;
-      },
+      // forceRefetch() {
+      //   return true;
+      // },
+      providesTags: [{ type: 'Articles', id: 'LIST' }],
     }),
     getArticleBySlug: builder.query<IArticleResponse, string>({
       query: (slug) => `/articles/${slug}`,
-      forceRefetch() {
-        return true;
-      },
-      // transformResponse: (response: IArticleResponse) => response.article,
+      providesTags: (result, error, slug) => [{ type: 'Article', id: slug }],
+      // forceRefetch() {
+      //   return true;
+      // },
     }),
     addArticle: builder.mutation<IArticleResponse, IArticleRequestAdding>({
       query: (data) => ({
@@ -56,6 +57,7 @@ export const articlesApi = createApi({
         method: 'POST',
         body: data,
       }),
+      invalidatesTags: [{ type: 'Articles', id: 'LIST' }],
     }),
     updateArticle: builder.mutation<IArticleResponse, IArticleRequestUpdate>({
       query: ({ data, slug }) => ({
@@ -63,12 +65,17 @@ export const articlesApi = createApi({
         method: 'PUT',
         body: data,
       }),
+      invalidatesTags: (result, error, { slug }) => [
+        { type: 'Articles', id: 'LIST' },
+        { type: 'Article', id: slug },
+      ],
     }),
     deleteArticle: builder.mutation<IArticleResponse, string>({
       query: (slug) => ({
         url: `/articles/${slug}`,
         method: 'DELETE',
       }),
+      invalidatesTags: () => [{ type: 'Articles', id: 'LIST' }],
     }),
     favoriteArticle: builder.mutation<IArticleResponse, IArticleRequestAdding>({
       query: (slug) => ({

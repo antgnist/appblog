@@ -1,7 +1,11 @@
 import { Row, Col, Space } from 'antd';
 import { ArticleRow } from 'entities/article';
 
-import { setArticlesList, changeArticlesPage } from 'entities/article/model';
+import {
+  setArticlesList,
+  changeArticlesPage,
+  updateLikes,
+} from 'entities/article/model';
 import { useGetArticlesQuery } from 'entities/article/model/articlesApi';
 import { userModel } from 'entities/user';
 import queryString from 'query-string';
@@ -35,15 +39,27 @@ export default function ArticlesList() {
 
   const { data, isFetching, error, refetch } = useGetArticlesQuery(currentPage); // page
   const articles = useAppSelector((state) => state.articles.entities);
+  const likes = useAppSelector((state) => state.articles.likes);
   const totalArticles = useAppSelector((state) => state.articles.articlesCount);
 
   useEffect(() => {
     if (data) {
       dispatch(setArticlesList(data));
+      data.articles.forEach((article) => {
+        if (!likes || !likes[article.slug]) {
+          dispatch(
+            updateLikes({
+              id: article.slug,
+              isFavorited: article.favorited,
+              favoritesCount: article.favoritesCount,
+            }),
+          );
+        }
+      });
     }
-  }, [data, dispatch]);
+  }, [data, likes, dispatch]);
 
-  if (isFetching)
+  if (isFetching && !data)
     return (
       <div
         style={{
@@ -124,8 +140,6 @@ export default function ArticlesList() {
           fullName={article.author.username}
           date={article.createdAt}
           avatarSrc={article.author.image}
-          likesCount={article.favoritesCount}
-          liked={article.favorited}
           slug={article.slug}
         />
       ))}

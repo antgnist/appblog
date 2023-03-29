@@ -9,6 +9,7 @@ export interface DeleteArticleButtonProps {
   style?: object;
   className?: string;
   text?: string;
+  callback?: () => void;
 }
 
 export function DeleteArticleButton({
@@ -16,6 +17,7 @@ export function DeleteArticleButton({
   style = {},
   className = '',
   text = 'Delete',
+  callback,
 }: DeleteArticleButtonProps) {
   const [deleteArticleMutation, { isLoading, isError, isSuccess }] =
     useDeleteArticleMutation();
@@ -37,8 +39,11 @@ export function DeleteArticleButton({
     if (isSuccess) {
       navigate('/');
       message.success('Article successfully deleted');
+      if (callback) {
+        callback();
+      }
     }
-  }, [isSuccess, navigate]);
+  }, [isSuccess, navigate, callback]);
 
   return (
     <div>

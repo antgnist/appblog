@@ -35,17 +35,36 @@ export default function ArticleDetail() {
   const slug = params.slug as string;
   const {
     data = initialStateArticle,
+    currentData,
     isFetching,
     error,
+    refetch,
   } = useGetArticleBySlugQuery(slug);
 
   const user = useAppSelector(userModel.selectUser);
+  const article = useAppSelector(articleModel.selectArticles);
 
   useEffect(() => {
-    if (data.article.slug) {
-      dispatch(articleModel.setArticle(data.article));
+    if (currentData) {
+      // && currentData.article.slug
+      dispatch(articleModel.setArticle(currentData.article));
     }
-  }, [data, dispatch]);
+  }, [currentData, dispatch]);
+
+  useEffect(() => {
+    if (
+      currentData &&
+      (!article.likes || !article.likes[currentData.article.slug])
+    ) {
+      dispatch(
+        articleModel.updateLikes({
+          id: currentData.article.slug,
+          isFavorited: currentData.article.favorited,
+          favoritesCount: currentData.article.favoritesCount,
+        }),
+      );
+    }
+  }, [currentData, article.likes, dispatch]);
 
   if (error) {
     return (
@@ -54,6 +73,21 @@ export default function ArticleDetail() {
         linkText="Посмотреть другие статьи"
         linkTo=".."
       />
+    );
+  }
+
+  if (isFetching || article.likes === null) {
+    return (
+      <Space
+        direction="vertical"
+        style={{
+          display: 'flex',
+          paddingTop: '24px',
+          paddingBottom: '64px',
+        }}
+      >
+        <SingleArticle slug="" tittle="" loading />
+      </Space>
     );
   }
 
@@ -67,7 +101,7 @@ export default function ArticleDetail() {
       }}
     >
       <SingleArticle
-        loading={isFetching}
+        loading={false}
         loggedIn={user.loggedIn}
         currentAuthor={data.article.author.username === user.username}
         slug={data.article.slug}
@@ -77,9 +111,8 @@ export default function ArticleDetail() {
         tagsArr={data.article.tagList}
         avatarSrc={data.article.author.image}
         date={data.article.createdAt}
-        likesCount={data.article.favoritesCount}
-        liked={data.article.favorited}
         fullName={data.article.author.username}
+        deleteCallback={refetch}
       />
     </Space>
   );

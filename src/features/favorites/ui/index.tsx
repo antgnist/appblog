@@ -1,62 +1,65 @@
 import { message } from 'antd';
+import { articleModel } from 'entities/article';
 import {
   useFavoriteArticleMutation,
   useUnfavoriteArticleMutation,
 } from 'entities/article/model/articlesApi';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from 'shared/hooks';
 import { LikesUI } from 'shared/ui';
 
 export interface FavoritesProps {
   keySlug?: string;
-  count?: string | number;
   style?: object;
   disabled?: boolean;
-  liked?: boolean;
 }
 
 export function Favorites({
   keySlug = '',
-  count = 0,
   style = {},
   disabled = true,
-  liked = false,
 }: FavoritesProps) {
-  const [currentLike, setCurrentLike] = useState(liked);
-  const [currentLikeCount, setCurrentLikeCount] = useState(count);
+  const dispatch = useAppDispatch();
+  const articles = useAppSelector(articleModel.selectArticles);
+  const { likes } = articles;
 
-  const [favoriteArticleMutation, { isError }] = useFavoriteArticleMutation();
-  const [unfavoriteArticleMutation, { isError: isError2 }] =
+  const [favoriteArticleMutation, { isError: isErrorLike }] =
+    useFavoriteArticleMutation();
+  const [unfavoriteArticleMutation, { isError: isErrorUnlike }] =
     useUnfavoriteArticleMutation();
 
   const likeHandler = () => {
-    if (!currentLike) {
-      favoriteArticleMutation(keySlug);
-      setCurrentLikeCount((oldLikeCount) => +oldLikeCount + 1);
-    } else {
-      unfavoriteArticleMutation(keySlug);
-      setCurrentLikeCount((oldLikeCount) => +oldLikeCount - 1);
+    if (likes) {
+      if (!likes[keySlug].isLiked) {
+        favoriteArticleMutation(keySlug);
+        dispatch(articleModel.setLike(keySlug));
+      } else {
+        unfavoriteArticleMutation(keySlug);
+        dispatch(articleModel.deleteLike(keySlug));
+      }
     }
-    setCurrentLike((state) => !state);
   };
 
   useEffect(() => {
-    if (isError) {
+    if (isErrorLike) {
       message.error('Error Like');
+      dispatch(articleModel.deleteLike(keySlug));
     }
-  }, [isError]);
+  }, [isErrorLike, dispatch, keySlug]);
 
   useEffect(() => {
-    if (isError2) {
+    if (isErrorUnlike) {
       message.error('Error Unlike');
+      dispatch(articleModel.setLike(keySlug));
     }
-  }, [isError2]);
+  }, [isErrorUnlike, dispatch, keySlug]);
 
   return (
     <LikesUI
-      count={currentLikeCount}
+      count={likes ? likes[keySlug]?.likesCount || 0 : 0}
       style={style}
       disabled={disabled}
-      liked={currentLike}
+      liked={likes ? likes[keySlug]?.isLiked || false : false}
       action={likeHandler}
     />
   );
